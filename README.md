@@ -171,9 +171,9 @@ target_include_directories(solver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../formatte
 
 target_link_libraries(solver formatter_ex_lib solver_lib)
 
- 8) cd build
+8) cd build
  
- 9) cmake ..
+9) cmake ..
  
- 10) cmake --build .
+10) cmake --build .
 
