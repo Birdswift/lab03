@@ -75,17 +75,21 @@ mkdir prep
 
 Пишу в него следующее 
 
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.22.1) 
 
-set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+set(CMAKE_CXX_COMPILER "/usr/bin/g++") 
 
-project(formatter_ex_lib VERSION 0.0.1)
+project(formatter_ex_lib VERSION 0.0.1) 
 
-set(SOURCE ~/formatter_ex_lib/b/formatter_ex.cpp ~/formatter_ex_lib/b/formatter_ex.h)
+set(Formation_ex ~/formatter_ex_lib/b/formatter_ex.cpp) 
 
-include_directories("~/formatter_lib/b") - приписываю директорию 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_lib formatter_lib_dir) 
 
-add_library(formatter_ex_lib STATIC ${SOURCE})
+add_library(formatter_ex_lib STATIC ${Formation_ex}) 
+
+target_include_directories(formatter_ex_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../formatter_lib/b)
+
+target_link_libraries(formatter_ex_lib formatter_lib)
 
 8) Перехожу в cd prep 
 
@@ -145,6 +149,8 @@ target_link_libraries(hello_exec formatter_lib formatter_ex_lib) - линкую 
 
 wget https://raw.githubusercontent.com/tp-labs/lab03/blob/master/solver_lib/solver.h
 
+wget https://raw.githubusercontent.com/tp-labs/lab03/blob/master/solver_application/equation.cpp
+
 6)cd ..
 
 7)nano CMakeLists.txt 
@@ -153,59 +159,21 @@ cmake_minimum_required(VERSION 3.22.1)
 
 set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 
-project(solver)
+project(solver VERSION 0.0.1)
 
-set(solution ~/solver_lib/build/solver.cpp ~/solver_lib/build/solver.h)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib formatter_ex_lib_dir)
 
-add_library(mylib STATIC ${solution})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../solver_lib solver_lib_dir)
 
-8)cd build 
+add_executable(solver "~/solver_lib/build/equation.cpp")
 
-cmake ..
+target_include_directories(solver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/build ${CMAKE_CURRENT_SOURCE_DIR}/../solver_lib/build)
 
-cmake --build .
+target_link_libraries(solver formatter_ex_lib solver_lib)
 
-9)cd
-
-mkdir equa
-
-cd equa
-
-mkdir build
-
-cd build
-
-wget https://raw.githubusercontent.com/tp-labs/lab03/blob/master/solver_application/equation.cpp
-
-10)cd ..
-
-11)nano CMakeLists.txt
-
-cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
-
-set(CMAKE_CXX_COMPILER "/usr/bin/g++-11")
-
-project(hello_world VERSION 0.0.1)
-
-include_directories("~/formatter_lib/b")
-
-include_directories("~/formatter_ex_lib/b")
-
-include_directories("~/solver_lib/build")
-
-add_library(formatter_lib STATIC "~/formatter_lib/b/formatter.cpp")
-
-add_library(formatter_ex_lib STATIC "~/formatter_ex_lib/b/formatter_ex.cpp")
-
-add_library(solver_lib STATIC "~/solver_lib/build/solver.cpp")
-
-add_executable(eq "~/equa/build/equation.cpp")
-
-target_link_libraries(eq formatter_lib formatter_ex_lib solver_lib)
-
-12) cd build
-
-13) cmake ..
-
-14) cmake --build .
+ 8) cd build
+ 
+ 9) cmake ..
+ 
+ 10) cmake --build .
 
